@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>VR Experience</title>
+    <script src="https://storage.googleapis.com/vrview/2.0/build/vrview.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet">
+    <style>
+
+    body {
+      background-color: #1C1E20;
+      /*background-color: #F75452;*/
+
+    }
+
+    h1 {
+      color: #F7F7F7;
+      font-family: "Cabin-Regular";
+      font-size: 30pt;
+      text-align: left;
+    }
+
+    #intro {
+      color: #F7F7F7;
+      font-family: "Cabin-Regular";
+      font-size: 15pt;
+      text-align: left;
+    }
+
+    h3 {
+      color: #F7F7F7;
+      font-family: "Cabin-Regular";
+      font-size: 20pt;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+#wrapper {
+    width: 100%;
+    overflow: hidden; /* add this to contain floated children */
+    height: 500px;
+}
+#vrview {
+    margin-top: 35px;
+    width: 65%;
+    float:left; /* add this */
+
+}
+
+
+#info {
+    overflow: hidden; /* if you don't want #second to wrap below #first */
+
+}
+    #description {
+      color: #F7F7F7;
+      font-family: "Cabin-Regular";
+      font-size: 15pt;
+      margin-left: 15px;
+      margin-right: 15px;
+    }
+
+    </style>
+  </head>
+  <body>
+    <h1>Constitutional Convention VR Experience</h1>
+    <p id="intro">Explore this Virtual Reality experience via the web, built
+      with the Google VR Web API.</p>
+    <div id="wrapper">
+      <div id="vrview"></div>
+      <div id="info">
+        <h3 id="label">The Founding Fathers</h3>
+        <p id="description">The Founding Fathers of the United States were those
+          individuals of the Thirteen Colonies in North America who led the
+          American Revolution against the authority of the British Crown in word
+          and deed and contributed to the establishment of the United States of
+          America.
+        <!-- <p id="description">With this VR experience, navigate around Philadelphia’s
+          Pennsylvania State House (Now called Independence Hall) and click on
+          various founding fathers in order to learn more about them.</p> -->
+      </div>
+    </div>
+    <script>
+
+    var vrView;
+
+    // Data stucture of Hotspot Objects
+    var hotspots = {
+      georgeWashington: {
+          title: "George Washington",
+          id: "george-washington",
+          description: "George Washington was a politician and soldier who served as the first President of the United States and was one of the Founding Fathers. He served as Commander-in-Chief of the Continental Army during the American Revolutionary War, and later presided over the 1787 convention that drafted the United States Constitution. He is popularly considered the driving force behind the nation's establishment and came to be known as the 'father of the country.'",
+          hotspot: {
+            pitch: -50.0, // 35
+            yaw: -89 * 2, // 73
+            radius: 0.1,
+            distance: 1.5
+          }
+      },
+      abrahamBaldwin: {
+        title: "Abraham Baldwin",
+        id: "abraham-baldwin",
+        description: "Abraham Baldwin was a  minister, Patriot, politician, and Founding Father. Born and raised in Connecticut, he was a graduate of Yale University Divinity School, after the Revolutionary War Baldwin became a lawyer. He moved to the U.S. state of Georgia in the mid-1780s to work under the governor and develop its educational system. Baldwin is noted as the developer and founding president of the University of Georgia, the first state-chartered public institution of higher education in the United States.",
+        hotspot: {
+          pitch: 30,
+          yaw: -31,
+          radius: 0.1,
+          distance: 1
+        }
+      },
+      benFranklin: {
+        title: "Benjamin Franklin",
+        id: "benjamin-franklin",
+        description: "Benjamin Franklin was one of the Founding Fathers of the United States. Franklin was a renowned polymath and a leading author, printer, political theorist, politician, freemason, postmaster, scientist, inventor, civic activist, statesman, and diplomat. As a scientist, he was a major figure in the American Enlightenment and the history of physics for his discoveries and theories regarding electricity. As an inventor, he is known for the lightning rod, bifocals, and the Franklin stove, among other inventions.",
+        hotspot: {
+          pitch: 8,
+          yaw: 28,
+          radius: 0.1,
+          distance: 3
+        }
+      },
+      alexHamilton: {
+        title: "Alexander Hamilton",
+        id: "alexander-hamilton",
+        description: "Alexander Hamilton was a statesman and one of the Founding Fathers of the United States. He was an influential interpreter and promoter of the U.S. Constitution, as well as the founder of the nation's financial system, the Federalist Party, the United States Coast Guard, and The New York Post newspaper. As the first Secretary of the Treasury, Hamilton was the main author of the economic policies of the George Washington administration.",
+        hotspot: {
+          pitch: 12,
+          yaw: -23,
+          radius: 0.1,
+          distance: 2
+        }
+      },
+    };
+
+    // When the VR View loads
+    // Make a URL for a downloaded image by posting it on flickr, then tap download -> view all sizes -> right click on img and tap copy img address
+    function onLoad() {
+          vrView = new VRView.Player('#vrview', {
+          image: '//c1.staticflickr.com/5/4262/35690636032_938e34e3da_o.jpg',
+          preview: '//c1.staticflickr.com/5/4262/35690636032_938e34e3da_o.jpg',
+          is_stereo: false, // false for mono img, true for stereo (2 stacked images)
+          is_autopan_off: true,
+          height: '500px',
+          width: '100%'
+      });
+
+    vrView.on('ready', onVRViewReady);
+    vrView.on('click', onHotspotClick);
+    vrView.on('error', onVRViewError);
+  }
+
+  function onVRViewReady(e) {
+    console.log('onVRViewReady');
+    addHotspot('scuba-diver');
+  }
+
+  // When a hotspot is tapped
+  function onHotspotClick(e) {
+    var hotspotObjects = Object.keys(hotspots)
+    var sceneTitles = []
+    console.log("+++++++++++++++++++");
+    for (var i = 0; i < hotspotObjects.length; i++) {
+      sceneTitles.push(hotspotObjects[i]);
+    }
+    console.log("Scenetitles: " + sceneTitles)
+    for (var i = 0; i < sceneTitles.length; i++) {
+      if (e.id == sceneTitles[i]) {
+        document.getElementById("label").innerHTML = hotspots[hotspotObjects[i]]['title'];
+        document.getElementById("description").innerHTML = hotspots[hotspotObjects[i]]['description'];
+        console.log('onHotspotClick', e);
+      }
+    }
+  }
+
+  function printMousePos(event) {
+    document.body.textContent =
+      "clientX: " + event.clientX +
+      " - clientY: " + event.clientY;
+  }
+
+  document.getElementById('vrview').addEventListener("click", printMousePos);
+
+  // Add a hotspot, from hotspots data structure
+  function addHotspot(id) {
+    var hotspotObjects = Object.keys(hotspots)
+    console.log(hotspotObjects)
+    for (var i = 0; i < hotspotObjects.length; i++) {
+      var hotspotKey = hotspotObjects[i];
+      var hotspot = hotspots[hotspotKey]['hotspot'];
+      console.log(hotspot)
+      vrView.addHotspot(hotspotKey, {
+        pitch: hotspot.pitch,
+        yaw: hotspot.yaw,
+        radius: hotspot.radius,
+        distance: hotspot.distance
+      })
+
+    }
+  }
+
+  function onVRViewError(e) {
+    console.log('Error! %s', e.message);
+  }
+
+  window.addEventListener('load', onLoad);
+
+  </script>
+  </body>
+</html>
